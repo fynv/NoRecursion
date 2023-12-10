@@ -11,3 +11,8 @@ It reminded me that there are some DFS based questions that are relatively trick
 * rabit_hole.cpp: a solution of the Rabbit Hole question (SCC + critical-path using topological sorting of DAG).
 
 
+## Rabbit Hole (Charpter 2) 
+
+Problem description:
+
+![](screen.gif)
