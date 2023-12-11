@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// kosaraju
 int scc(int N, int M, vector<int> A, vector<int> B)
 {
     vector<unordered_set<int>> edge_map(N);
@@ -114,6 +115,112 @@ int scc(int N, int M, vector<int> A, vector<int> B)
         }
         printf("]\n");
     }
+}
+
+// tarjan
+int scc2(int N, int M, vector<int> A, vector<int> B)
+{
+    vector<unordered_set<int>> edge_map(N);
+    for (int i = 0; i < M; i++)
+    {
+        edge_map[A[i] - 1].insert(B[i] - 1);    
+    }
+
+    struct State
+    {
+        int idx;
+        unordered_set<int>::iterator it;
+    };
+
+    struct Mark
+    {
+        unsigned a = 0xFFFFFFFF;
+        unsigned b = 0xFFFFFFFF;
+    };
+
+    unsigned imark = 0;
+    vector<Mark> marks(N);
+    int comp_id = 0;
+    vector<int> comps(N, -1);
+    stack<int> st_scc;
+
+    for (int i = 0; i < N; i++)
+    {
+        if (marks[i].a != 0xFFFFFFFF) continue;
+
+        stack<State> st;
+        State cur = { i, edge_map[i].begin() };
+        marks[i] = { imark, imark };
+        imark++;
+        st_scc.push(i);
+
+        while (true)
+        {
+            int j = cur.idx;
+            unordered_set<int>& edges = edge_map[j];
+            if (cur.it != edges.end())
+            {
+                int k = *cur.it;
+                cur.it++;
+                if (marks[k].a == 0xFFFFFFFF)
+                {
+                    st.push(cur);
+                    cur = { k, edge_map[k].begin() };
+                    marks[k] = { imark, imark };
+                    imark++;
+                    st_scc.push(k);
+                }
+                else if(comps[k] == -1)
+                {   
+                    if (marks[k].b < marks[j].b)
+                    {                        
+                        marks[j].b = marks[k].b;
+                    }
+                }
+            }
+            else
+            {
+                if (marks[cur.idx].b == marks[cur.idx].a)
+                {
+                    int pop_to = marks[cur.idx].a;                    
+                    while (true)
+                    {
+                        int k = st_scc.top();
+                        st_scc.pop();
+                        comps[k] = comp_id;
+                        if (marks[k].a == pop_to) break;
+                    }
+                    comp_id++;
+                }
+
+                if (st.size() < 1) break;
+                State top = st.top();
+                st.pop();
+                if (marks[cur.idx].b < marks[top.idx].b)
+                {
+                    marks[top.idx].b = marks[cur.idx].b;
+                }
+                cur = top;                
+            }            
+        }
+    }
+
+    vector<vector<int>> lst_scc(comp_id);
+    for (int i = 0; i < N; i++)
+    {
+        lst_scc[comps[i]].push_back(i);
+    }
+
+    for (int i = 0; i < lst_scc.size(); i++)
+    {
+        printf("scc %d: [ ", i + 1);
+        auto& scc = lst_scc[i];
+        for (int j = 0; j < scc.size(); j++)
+        {
+            printf("%d ", scc[j] + 1);
+        }
+        printf("]\n");
+    }
 
 }
 
@@ -124,7 +231,8 @@ int main()
 	vector<int> A = { 3, 2, 5, 9, 10, 3, 3, 9, 4 };
 	vector<int> B = { 9, 5, 7, 8, 6, 4, 5, 3, 9 };
 
-	scc(N, M, A, B);
+	//scc(N, M, A, B);
+    scc2(N, M, A, B);
 
 	return 0;
 }
