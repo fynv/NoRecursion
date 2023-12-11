@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int dfs(int N, int M, vector<int> A, vector<int> B)
+void dfs(int N, int M, vector<int> A, vector<int> B)
 {
 	vector<unordered_set<int>> edge_map(N);
 	for (int i = 0; i < M; i++)

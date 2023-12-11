@@ -6,7 +6,7 @@
 using namespace std;
 
 // kosaraju
-int scc(int N, int M, vector<int> A, vector<int> B)
+void scc(int N, int M, vector<int> A, vector<int> B)
 {
     vector<unordered_set<int>> edge_map(N);
     vector<unordered_set<int>> edge_map_r(N);
@@ -118,7 +118,7 @@ int scc(int N, int M, vector<int> A, vector<int> B)
 }
 
 // tarjan
-int scc2(int N, int M, vector<int> A, vector<int> B)
+void scc2(int N, int M, vector<int> A, vector<int> B)
 {
     vector<unordered_set<int>> edge_map(N);
     for (int i = 0; i < M; i++)
